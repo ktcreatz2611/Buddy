@@ -62,3 +62,13 @@ export interface DocumentProcessingJobData {
   documentId: string;
   projectId: string;
 }
+
+/** Queue for research jobs */
+export const researchQueue = new Queue('research', {
+  connection: redis,
+  defaultJobOptions: { attempts: 1 },
+});
+
+export interface ResearchJobData {
+  sessionId: string;
+}
