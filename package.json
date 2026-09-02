@@ -39,6 +39,7 @@
     "bullmq": "^5.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^4.4.0",
     "drizzle-orm": "^0.44.0",
     "eventsource-parser": "^3.0.0",
     "file-type": "^22.0.2",
