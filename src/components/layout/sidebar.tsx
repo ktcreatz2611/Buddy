@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows, FileText, Brain, FlaskConical, Wrench } from "lucide-react"
+import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows, FileText, Brain, FlaskConical, Wrench, LayoutDashboard, ClipboardList } from "lucide-react"
 
 interface SidebarProps {
   className?: string
@@ -64,6 +64,17 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Footer Navigation */}
       <div className="p-4 border-t border-zinc-800 flex flex-col gap-1">
+        <Link href="/dashboard">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/dashboard')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <LayoutDashboard className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </Link>
         <Link href="/compare">
           <Button variant="ghost" className={cn(
             "w-full justify-start gap-2 h-9 px-2",
@@ -119,10 +130,21 @@ export function Sidebar({ className }: SidebarProps) {
             Memory
           </Button>
         </Link>
+        <Link href="/settings/audit">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/settings/audit')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <ClipboardList className="h-4 w-4" />
+            Audit Log
+          </Button>
+        </Link>
         <Link href="/settings/providers">
           <Button variant="ghost" className={cn(
             "w-full justify-start gap-2 h-9 px-2",
-            pathname?.startsWith('/settings')
+            pathname === '/settings/providers' || pathname === '/settings'
               ? "bg-zinc-800 text-zinc-100"
               : "text-zinc-400 hover:text-zinc-100"
           )}>

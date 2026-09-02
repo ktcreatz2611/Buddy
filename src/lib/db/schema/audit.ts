@@ -1,7 +1,9 @@
-import { pgTable, uuid, text, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, jsonb, timestamp, index, integer, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { workspaces } from './workspaces';
 import { users } from './users';
+import { researchSessions } from './research';
+import { messages } from './messages';
 
 export const auditEvents = pgTable('audit_events', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -22,4 +24,24 @@ export const auditEvents = pgTable('audit_events', {
 export const auditEventsRelations = relations(auditEvents, ({ one }) => ({
   workspace: one(workspaces, { fields: [auditEvents.workspaceId], references: [workspaces.id] }),
   user: one(users, { fields: [auditEvents.userId], references: [users.id] }),
+}));
+
+export const toolCalls = pgTable('tool_calls', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').references(() => researchSessions.id, { onDelete: 'cascade' }),
+  messageId: uuid('message_id').references(() => messages.id, { onDelete: 'cascade' }),
+  toolName: text('tool_name').notNull(),
+  input: jsonb('input'),
+  output: jsonb('output'),
+  durationMs: integer('duration_ms'),
+  success: boolean('success').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+}, (table) => [
+  index('idx_tool_calls_session').on(table.sessionId),
+  index('idx_tool_calls_message').on(table.messageId),
+]);
+
+export const toolCallsRelations = relations(toolCalls, ({ one }) => ({
+  session: one(researchSessions, { fields: [toolCalls.sessionId], references: [researchSessions.id] }),
+  message: one(messages, { fields: [toolCalls.messageId], references: [messages.id] }),
 }));
