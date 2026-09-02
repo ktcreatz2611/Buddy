@@ -12,3 +12,4 @@ export * from './usage';
 export * from './audit';
 export * from './attachments';
 export * from './outputs';
+export * from './comparisons';

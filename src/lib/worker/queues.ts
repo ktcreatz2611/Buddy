@@ -28,3 +28,23 @@ export interface ChatGenerationJobData {
   modelKey: string;
   credentialId: string;  // Worker will decrypt the key itself
 }
+
+/** Queue for comparison generation jobs */
+export const comparisonQueue = new Queue('comparison-generation', {
+  connection: redis,
+  defaultJobOptions: {
+    attempts: 2,
+    backoff: { type: 'exponential', delay: 1000 },
+    removeOnComplete: { age: 24 * 3600, count: 1000 },
+    removeOnFail: { age: 7 * 24 * 3600 },
+  },
+});
+
+export interface ComparisonJobData {
+  comparisonResponseId: string;
+  comparisonId: string;
+  providerId: string;
+  modelKey: string;
+  credentialId: string;
+  prompt: string;
+}

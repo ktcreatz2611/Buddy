@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { MessageSquare, Plus, Settings, Sparkles, Database } from "lucide-react"
+import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows } from "lucide-react"
 
 interface SidebarProps {
   className?: string
@@ -64,14 +64,28 @@ export function Sidebar({ className }: SidebarProps) {
 
       {/* Footer Navigation */}
       <div className="p-4 border-t border-zinc-800 flex flex-col gap-1">
-        <Button variant="ghost" className="w-full justify-start gap-2 h-9 px-2 text-zinc-400 hover:text-zinc-100">
-          <Database className="h-4 w-4" />
-          Providers
-        </Button>
-        <Button variant="ghost" className="w-full justify-start gap-2 h-9 px-2 text-zinc-400 hover:text-zinc-100">
-          <Settings className="h-4 w-4" />
-          Settings
-        </Button>
+        <Link href="/compare">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/compare')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <GitCompareArrows className="h-4 w-4" />
+            Compare
+          </Button>
+        </Link>
+        <Link href="/settings/providers">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/settings')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <Settings className="h-4 w-4" />
+            Settings
+          </Button>
+        </Link>
       </div>
     </div>
   )
