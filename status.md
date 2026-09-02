@@ -1,28 +1,24 @@
 # Buddy — Project Status
 
-## Current Phase: 2 Complete — Ready for Phase 3
+## Current Phase: 3 Complete — Ready for Phase 4
 
 ### Completed
 - [x] Phase 0: Foundation (git, deps, Docker, schema, auth, docs, CI)
 - [x] Phase 1: Walking Skeleton (provider abstraction, OpenAI adapter, BullMQ worker, chat API, stream endpoint, chat UI, app shell)
 - [x] Phase 2: Full provider matrix, settings UI, credential management
-  - 4 provider adapters (OpenAI, Anthropic, Google, OpenAI-compatible factory)
-  - 6 pre-registered providers (OpenAI, Anthropic, Google, Groq, DeepSeek, OpenRouter)
-  - 7 provider API routes (providers, credentials, models, health checks)
-  - Settings UI pages (provider list, detail, credential management, model table)
-  - DB seed script with 15 pre-configured models
-  - 4 new shadcn/ui primitives (Dialog, Switch, Table, Label)
+- [x] Phase 3: Comparison mode (side-by-side streaming, synthesize, critique)
+  - Schema: comparisons + comparison_responses tables
+  - 7 comparison API routes (create, get, stream, stop, retry, synthesize, critique)
+  - BullMQ comparison worker with parallel streaming
+  - Compare page with model selector + prompt input
+  - Results page with responsive layout (columns desktop, tabs mobile)
+  - Real-time metrics (latency, tokens, cost, speed)
 - [x] TypeScript: 0 errors
-- [x] Next.js build: 28 routes compiled
+- [x] Next.js build: 37 routes compiled
 
-### In Progress
-- Nothing
-
-### Blocked
-- Docker Desktop not running — cannot test DB or runtime
-
-### Next Recommended Tasks (Phase 3)
-1. Comparison mode — side-by-side streaming from multiple models
-2. Comparison UI with independent stream panels
-3. Latency/tokens/cost display per model
-4. Critique-another and synthesize-all actions
+### Next Recommended Tasks (Phase 4)
+1. File ingestion + RAG in normal chat
+2. Document upload, parsing (PDF/DOCX/XLSX/CSV/images)
+3. Chunking + embedding pipeline
+4. pgvector similarity search
+5. Citation in responses

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows } from "lucide-react"
+import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows, FileText } from "lucide-react"
 
 interface SidebarProps {
   className?: string
@@ -73,6 +73,17 @@ export function Sidebar({ className }: SidebarProps) {
           )}>
             <GitCompareArrows className="h-4 w-4" />
             Compare
+          </Button>
+        </Link>
+        <Link href="/documents">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/documents')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <FileText className="h-4 w-4" />
+            Documents
           </Button>
         </Link>
         <Link href="/settings/providers">

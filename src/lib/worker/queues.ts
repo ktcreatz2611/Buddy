@@ -48,3 +48,17 @@ export interface ComparisonJobData {
   credentialId: string;
   prompt: string;
 }
+
+/** Queue for document processing jobs */
+export const documentProcessingQueue = new Queue('document-processing', {
+  connection: redis,
+  defaultJobOptions: { 
+    attempts: 2, 
+    backoff: { type: 'exponential', delay: 2000 } 
+  },
+});
+
+export interface DocumentProcessingJobData {
+  documentId: string;
+  projectId: string;
+}
