@@ -23,7 +23,7 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div className="flex-1 overflow-y-auto bg-zinc-950 p-6 text-zinc-100">
+    <div className="bg-zinc-950 p-6 text-zinc-100">
       <div className="mx-auto max-w-6xl space-y-8">
         
         {/* Header */}

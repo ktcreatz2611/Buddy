@@ -46,7 +46,7 @@ export function AppShell({ children }: AppShellProps) {
       )}
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden relative">
+      <div className="flex flex-1 flex-col min-h-0 relative">
         <header className="absolute top-0 right-0 z-10 hidden md:flex h-14 items-center justify-end px-4 w-full bg-gradient-to-b from-zinc-950 to-transparent pointer-events-none">
           <div className="pointer-events-auto flex items-center gap-2">
             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-zinc-900 border border-zinc-800">
@@ -54,7 +54,7 @@ export function AppShell({ children }: AppShellProps) {
             </Button>
           </div>
         </header>
-        <main className="flex-1 overflow-auto relative">
+        <main className="flex-1 min-h-0 overflow-auto">
           {children}
         </main>
       </div>
