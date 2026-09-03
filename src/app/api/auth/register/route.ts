@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
+import { workspaces, workspaceMembers } from '@/lib/db/schema/workspaces';
+import { projects } from '@/lib/db/schema/projects';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { eq, or } from 'drizzle-orm';
@@ -18,6 +20,7 @@ const registerSchema = z.object({
 
 /**
  * User registration endpoint
+ * Creates user + default workspace + default project
  */
 export async function POST(request: Request) {
   try {
@@ -38,7 +41,28 @@ export async function POST(request: Request) {
     
     const passwordHash = await bcrypt.hash(password, 12);
     const [user] = await db.insert(users).values({ name, username, email, passwordHash }).returning();
-    
+
+    // Create default workspace
+    const slug = username.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const [workspace] = await db.insert(workspaces).values({
+      name: `${name}'s Workspace`,
+      slug,
+    }).returning();
+
+    // Add user as workspace owner
+    await db.insert(workspaceMembers).values({
+      workspaceId: workspace.id,
+      userId: user.id,
+      role: 'owner',
+    });
+
+    // Create default project
+    await db.insert(projects).values({
+      workspaceId: workspace.id,
+      name: 'General',
+      description: 'Default project for conversations',
+    });
+
     return NextResponse.json(
       { success: true, data: { id: user.id, name: user.name, username: user.username, email: user.email } },
       { status: 201 }
