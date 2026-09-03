@@ -4,7 +4,7 @@ import { SearchPanel } from "@/components/documents/search-panel";
 
 export default function DocumentsPage() {
   return (
-    <div className="flex flex-col h-full space-y-6">
+    <div className="flex h-full flex-col bg-zinc-950 text-zinc-100 p-6 md:p-8 max-w-6xl mx-auto w-full space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Documents</h1>
