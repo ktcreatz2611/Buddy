@@ -54,7 +54,7 @@ export function AppShell({ children }: AppShellProps) {
             </Button>
           </div>
         </header>
-        <main className="flex-1 overflow-hidden relative">
+        <main className="flex-1 overflow-auto relative">
           {children}
         </main>
       </div>
