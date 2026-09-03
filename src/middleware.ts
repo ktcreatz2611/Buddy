@@ -1,23 +1,33 @@
-import { auth } from '@/lib/auth';
+import { NextResponse, type NextRequest } from 'next/server';
 
 /**
- * Middleware to protect routes
+ * Edge-compatible middleware to protect routes based on session cookie.
  */
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
+export function middleware(req: NextRequest) {
+  const sessionToken =
+    req.cookies.get('authjs.session-token')?.value ||
+    req.cookies.get('__Secure-authjs.session-token')?.value ||
+    req.cookies.get('next-auth.session-token')?.value ||
+    req.cookies.get('__Secure-next-auth.session-token')?.value;
+
+  const isLoggedIn = !!sessionToken;
   const { pathname } = req.nextUrl;
-  
+
   const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register');
-  const isProtectedRoute = pathname.startsWith('/workspace') || (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/'));
+  const isProtectedRoute =
+    pathname.startsWith('/workspace') ||
+    (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/'));
 
   if (isProtectedRoute && !isLoggedIn) {
-    return Response.redirect(new URL('/login', req.nextUrl));
+    return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
-  
+
   if (isAuthRoute && isLoggedIn) {
-    return Response.redirect(new URL('/workspace', req.nextUrl));
+    return NextResponse.redirect(new URL('/workspace', req.nextUrl));
   }
-});
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [

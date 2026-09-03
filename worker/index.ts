@@ -1,52 +1,38 @@
 import 'dotenv/config';
 import { Worker } from 'bullmq';
-import { createRedisConnection } from '../src/lib/redis';
-import { processChatGeneration } from '../src/lib/worker/chat-generation';
-import type { ChatGenerationJobData } from '../src/lib/worker/queues';
+import { redis } from '@/lib/redis';
+import { processChatGeneration } from '@/lib/worker/chat-generation';
+import { comparisonWorker } from '@/lib/worker/comparison-generation';
+import { documentProcessingWorker } from '@/lib/worker/document-processing';
+import { researchWorker } from '@/lib/worker/research-worker';
 
-// Register provider adapters
-import '../src/lib/providers/adapters';
+console.log('🚀 Starting Buddy background workers...');
 
-const connection = createRedisConnection();
-
-const chatWorker = new Worker<ChatGenerationJobData>(
-  'chat-generation',
-  async (job) => processChatGeneration(job),
-  {
-    connection,
-    concurrency: 5,
-    limiter: {
-      max: 10,
-      duration: 1000,
-    },
-  }
-);
+const chatWorker = new Worker('chat-generation', processChatGeneration, {
+  connection: redis,
+  concurrency: 5,
+});
 
 chatWorker.on('completed', (job) => {
-  console.log(`[worker] Job ${job.id} completed for message ${job.data.messageId}`);
+  console.log(`[ChatWorker] Job ${job.id} completed`);
 });
 
 chatWorker.on('failed', (job, err) => {
-  console.error(`[worker] Job ${job?.id} failed:`, err.message);
+  console.error(`[ChatWorker] Job ${job?.id} failed:`, err);
 });
 
-chatWorker.on('error', (err) => {
-  console.error('[worker] Worker error:', err);
-});
+console.log('✅ BullMQ Workers active: [chat-generation, comparison-generation, document-processing, research]');
 
-console.log('[worker] Chat generation worker started');
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('[worker] Shutting down...');
-  await chatWorker.close();
-  await connection.quit();
+const shutdown = async () => {
+  console.log('Stopping workers...');
+  await Promise.all([
+    chatWorker.close(),
+    comparisonWorker.close(),
+    documentProcessingWorker.close(),
+    researchWorker.close(),
+  ]);
   process.exit(0);
-});
+};
 
-process.on('SIGINT', async () => {
-  console.log('[worker] Shutting down...');
-  await chatWorker.close();
-  await connection.quit();
-  process.exit(0);
-});
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
