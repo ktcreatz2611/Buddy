@@ -6,12 +6,8 @@ import { Plus } from "lucide-react"
 import { ProviderCard, ProviderData } from "@/components/settings/provider-card"
 import { Button } from "@/components/ui/button"
 
-// Dummy data for initial UI dev
-const MOCK_PROVIDERS: ProviderData[] = [
-  { id: "openai", name: "OpenAI", type: "openai", enabled: true, modelCount: 12, health: "healthy" },
-  { id: "anthropic", name: "Anthropic", type: "anthropic", enabled: true, modelCount: 4, health: "healthy" },
-  { id: "local-ollama", name: "Local Ollama", type: "custom", enabled: false, modelCount: 3, health: "unknown" },
-]
+// Clear mock data to avoid confusing the user
+const MOCK_PROVIDERS: ProviderData[] = []
 
 export default function ProvidersPage() {
   const router = useRouter()
@@ -33,15 +29,25 @@ export default function ProvidersPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {MOCK_PROVIDERS.map((provider) => (
-          <ProviderCard 
-            key={provider.id} 
-            provider={provider} 
-            onClick={handleProviderClick} 
-          />
-        ))}
-      </div>
+      {MOCK_PROVIDERS.length === 0 ? (
+        <div className="text-center py-12 border border-dashed border-zinc-800 rounded-lg">
+          <p className="text-zinc-400">No providers configured yet.</p>
+          <Button variant="outline" className="mt-4 gap-2 border-zinc-800 text-zinc-300">
+            <Plus className="h-4 w-4" />
+            Add your first provider
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {MOCK_PROVIDERS.map((provider) => (
+            <ProviderCard 
+              key={provider.id} 
+              provider={provider} 
+              onClick={handleProviderClick} 
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
