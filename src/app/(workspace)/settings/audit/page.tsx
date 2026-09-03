@@ -90,12 +90,8 @@ export default function AuditLogPage() {
   })
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6 text-zinc-100">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Audit Log</h1>
-          <p className="text-sm text-zinc-400">Track security events, configuration changes, and data access.</p>
-        </div>
+    <div className="space-y-6 text-zinc-100">
+      <div className="flex justify-end">
         <Button variant="outline" className="bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-zinc-100 w-full sm:w-auto">
           <Download className="mr-2 h-4 w-4" />
           Export CSV

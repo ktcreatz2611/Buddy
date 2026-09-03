@@ -39,12 +39,7 @@ export default function BudgetSettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6 text-zinc-100">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Budget & Limits</h1>
-        <p className="text-sm text-zinc-400">Configure usage limits to control your AI spending.</p>
-      </div>
-
+    <div className="space-y-8 text-zinc-100">
       <div className="grid gap-6 md:grid-cols-2">
         {/* Current Usage Summary */}
         <Card className="bg-zinc-950 border-zinc-800">
