@@ -28,7 +28,7 @@ export default async function GeneralSettingsPage() {
             </div>
             <div>
               <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Username</label>
-              <p className="text-sm text-zinc-200 mt-1">{profile?.username || '—'}</p>
+              <p className="text-sm text-zinc-200 mt-1">{(profile as any)?.username || '—'}</p>
             </div>
             <div>
               <label className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Email</label>

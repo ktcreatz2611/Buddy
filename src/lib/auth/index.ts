@@ -9,7 +9,7 @@ import { users, accounts, sessions, verificationTokens } from '@/lib/db/schema';
 /**
  * NextAuth configuration — database sessions (revocable), credentials provider.
  */
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const nextAuthResult = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users as any,
     accountsTable: accounts as any,
@@ -69,3 +69,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+export const { handlers, signIn, signOut } = nextAuthResult;
+
+export const auth: typeof nextAuthResult.auth = async (...args: any[]) => {
+  try {
+    // @ts-expect-error NextAuth auth() overloads make it hard to type a passthrough spread
+    return await nextAuthResult.auth(...args);
+  } catch (error) {
+    console.error("Auth session error caught (likely invalid/old cookie):", error);
+    return null;
+  }
+};
