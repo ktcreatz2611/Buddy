@@ -21,44 +21,7 @@ interface AuditEvent {
   metadata: Record<string, any>
 }
 
-const MOCK_EVENTS: AuditEvent[] = [
-  {
-    id: "evt_1",
-    timestamp: "2023-10-24T14:32:01Z",
-    action: "credential.create",
-    category: "security",
-    user: "System",
-    resource: "Provider:OpenAI",
-    metadata: { provider: "openai", ip: "192.168.1.1", status: "success" }
-  },
-  {
-    id: "evt_2",
-    timestamp: "2023-10-24T12:15:44Z",
-    action: "memory.edit",
-    category: "data",
-    user: "User",
-    resource: "Memory:ProjectContext",
-    metadata: { memoryId: "mem_abc123", changes: ["updated description"], size: 450 }
-  },
-  {
-    id: "evt_3",
-    timestamp: "2023-10-23T09:41:22Z",
-    action: "budget.update",
-    category: "config",
-    user: "User",
-    resource: "Settings:Budget",
-    metadata: { previousLimit: 50, newLimit: 100, type: "monthly_cost" }
-  },
-  {
-    id: "evt_4",
-    timestamp: "2023-10-22T16:05:11Z",
-    action: "export.create",
-    category: "data",
-    user: "User",
-    resource: "Chat:ReactPerf",
-    metadata: { format: "markdown", sizeBytes: 15420, conversationId: "conv_xyz789" }
-  },
-]
+const MOCK_EVENTS: AuditEvent[] = []
 
 const categoryColors = {
   security: "text-red-400 bg-red-400/10 border-red-400/20",
