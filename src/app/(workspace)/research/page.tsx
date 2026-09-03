@@ -6,26 +6,7 @@ import { Plus, Search, Clock, FileText, FlaskConical } from "lucide-react"
 import { NewResearchDialog } from "@/components/research/new-research-dialog"
 
 // Mock data
-const mockSessions = [
-  {
-    id: "session-1",
-    question: "What are the latest advancements in solid-state batteries?",
-    status: "investigating",
-    turns: 12,
-    tokens: 45000,
-    elapsed: "5m 20s",
-    date: "Just now",
-  },
-  {
-    id: "session-2",
-    question: "Comparison of Next.js App Router vs Pages Router performance metrics",
-    status: "complete",
-    turns: 20,
-    tokens: 89000,
-    elapsed: "12m 45s",
-    date: "2 hours ago",
-  },
-]
+const mockSessions: any[] = []
 
 export default function ResearchPage() {
   return (

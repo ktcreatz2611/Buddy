@@ -10,38 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Search, Plus, Trash2, BrainCircuit } from "lucide-react"
 
 // Mock memory data for UI implementation
-const MOCK_MEMORIES: Memory[] = [
-  {
-    id: "1",
-    key: "user.preferences.theme",
-    value: "User prefers dark mode and zinc colors.",
-    scope: "global",
-    scope_id: null,
-    source: "agent_extracted",
-    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-    updated_at: new Date(Date.now() - 86400000 * 2).toISOString()
-  },
-  {
-    id: "2",
-    key: "workspace.stack",
-    value: "Next.js App Router, Tailwind CSS v4, shadcn/ui.",
-    scope: "workspace",
-    scope_id: "wk_123",
-    source: "user",
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    updated_at: new Date(Date.now() - 86400000).toISOString()
-  },
-  {
-    id: "3",
-    key: "project.guidelines",
-    value: "Always write functional components with hooks. Use React.FC only when necessary. Ensure accessibility.",
-    scope: "project",
-    scope_id: "prj_456",
-    source: "agent_extracted",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
+const MOCK_MEMORIES: Memory[] = []
 
 type TabId = "all" | MemoryScope
 

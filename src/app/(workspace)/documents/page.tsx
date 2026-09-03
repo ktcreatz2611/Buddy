@@ -20,34 +20,9 @@ export default function DocumentsPage() {
             {/* Filter would go here */}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DocumentCard 
-              id="doc1"
-              filename="q3-financial-report.pdf"
-              type="application/pdf"
-              size={2450000}
-              pages={42}
-              status="ready"
-              uploadDate={new Date().toISOString()}
-              chunks={342}
-            />
-            <DocumentCard 
-              id="doc2"
-              filename="employee-handbook.docx"
-              type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              size={1200000}
-              pages={15}
-              status="processing"
-              uploadDate={new Date().toISOString()}
-            />
-            <DocumentCard 
-              id="doc3"
-              filename="corrupted-file.pdf"
-              type="application/pdf"
-              size={500}
-              pages={1}
-              status="error"
-              uploadDate={new Date().toISOString()}
-            />
+            <div className="col-span-full py-12 text-center border border-dashed border-zinc-800 rounded-lg">
+              <p className="text-zinc-500">No documents uploaded yet.</p>
+            </div>
           </div>
         </div>
         
