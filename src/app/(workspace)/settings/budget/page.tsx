@@ -13,8 +13,8 @@ import { Save, AlertCircle } from "lucide-react"
 
 export default function BudgetSettingsPage() {
   const [loading, setLoading] = useState(false)
-  const [dailyEnabled, setDailyEnabled] = useState(true)
-  const [monthlyEnabled, setMonthlyEnabled] = useState(true)
+  const [dailyEnabled, setDailyEnabled] = useState(false)
+  const [monthlyEnabled, setMonthlyEnabled] = useState(false)
 
   const handleSave = async () => {
     setLoading(true)
@@ -23,14 +23,14 @@ export default function BudgetSettingsPage() {
     setLoading(false)
   }
 
-  // Mock usage data
-  const dailyTokensUsed = 45000
+  // Default empty state usage data
+  const dailyTokensUsed = 0
   const dailyTokenLimit = 100000
-  const dailyPercent = (dailyTokensUsed / dailyTokenLimit) * 100
+  const dailyPercent = 0
 
-  const monthlyCostUsed = 33.13
+  const monthlyCostUsed = 0
   const monthlyCostLimit = 50.00
-  const monthlyPercent = (monthlyCostUsed / monthlyCostLimit) * 100
+  const monthlyPercent = 0
 
   const getProgressColor = (percent: number) => {
     if (percent > 80) return "bg-red-500"
