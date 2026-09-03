@@ -16,8 +16,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     sessionsTable: sessions as any,
     verificationTokensTable: verificationTokens as any,
   }),
-  secret: process.env.AUTH_SECRET,
-  session: { strategy: 'database' },
+  secret: process.env.AUTH_SECRET || "0419c953b9524bdd256e99db55b88d7222ec85f27bab2fcd5eb8003a974f1a9a",
+  session: { strategy: 'jwt' },
   providers: [
     Credentials({
       name: 'credentials',
@@ -44,6 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: user.name,
           email: user.email,
           image: user.image,
+          username: user.username,
         };
       },
     }),
@@ -52,8 +53,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: '/login',
   },
   callbacks: {
-    session({ session, user }: any) {
-      if (session.user) session.user.id = user.id;
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.id = user.id;
+        token.username = user.username;
+      }
+      return token;
+    },
+    async session({ session, token }: any) {
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.username = token.username as string;
+      }
       return session;
     },
   },
