@@ -3,10 +3,11 @@ import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { eq } from 'drizzle-orm';
+import { eq, or } from 'drizzle-orm';
 
 const registerSchema = z.object({
   name: z.string().min(1).max(100),
+  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_.-]+$/, 'Username can only contain letters, numbers, underscores, dots, and hyphens'),
   email: z.string().email(),
   password: z.string().min(8).max(128),
 });
@@ -17,24 +18,25 @@ const registerSchema = z.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, password } = registerSchema.parse(body);
+    const { name, username, email, password } = registerSchema.parse(body);
     
-    // Check existing user
+    // Check existing user by email or username
     const existing = await db.query.users.findFirst({
-      where: eq(users.email, email),
+      where: or(eq(users.email, email), eq(users.username, username)),
     });
     if (existing) {
+      const field = existing.email === email ? 'Email' : 'Username';
       return NextResponse.json(
-        { success: false, error: { code: 'EMAIL_EXISTS', message: 'Email already registered' } },
+        { success: false, error: { code: 'CONFLICT', message: `${field} already taken` } },
         { status: 409 }
       );
     }
     
     const passwordHash = await bcrypt.hash(password, 12);
-    const [user] = await db.insert(users).values({ name, email, passwordHash }).returning();
+    const [user] = await db.insert(users).values({ name, username, email, passwordHash }).returning();
     
     return NextResponse.json(
-      { success: true, data: { id: user.id, name: user.name, email: user.email } },
+      { success: true, data: { id: user.id, name: user.name, username: user.username, email: user.email } },
       { status: 201 }
     );
   } catch (error) {

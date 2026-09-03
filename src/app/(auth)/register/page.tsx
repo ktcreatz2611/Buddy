@@ -11,6 +11,7 @@ import Link from 'next/link';
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -25,7 +26,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, username, email, password }),
       });
 
       const data = await res.json();
@@ -46,7 +47,7 @@ export default function RegisterPage() {
       if (signInRes?.error) {
         setError('Registered successfully, but auto-login failed. Please log in.');
       } else {
-        router.push('/workspace');
+        router.push('/dashboard');
         router.refresh();
       }
     } catch (err) {
@@ -74,11 +75,27 @@ export default function RegisterPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder="Keshav Kumar"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
             minLength={1}
             maxLength={100}
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ''))}
+            placeholder="keshav_kumar"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            minLength={3}
+            maxLength={30}
+          />
+          <p className="mt-1 text-xs text-gray-500">Letters, numbers, underscores, dots, hyphens only</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">Email</label>
@@ -87,6 +104,7 @@ export default function RegisterPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="keshav@example.com"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
@@ -98,6 +116,7 @@ export default function RegisterPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Minimum 8 characters"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
             minLength={8}
