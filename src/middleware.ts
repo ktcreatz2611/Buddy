@@ -1,7 +1,23 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 /**
- * Edge-compatible middleware to protect routes based on session cookie.
+ * Protected routes that require authentication.
+ * These correspond to the (workspace) route group pages.
+ */
+const PROTECTED_PREFIXES = [
+  '/dashboard',
+  '/chat',
+  '/compare',
+  '/documents',
+  '/research',
+  '/tools',
+  '/memories',
+  '/settings',
+];
+
+/**
+ * Edge-compatible middleware — checks session cookie presence.
+ * Full session validation happens in API routes via auth().
  */
 export function middleware(req: NextRequest) {
   const sessionToken =
@@ -13,17 +29,18 @@ export function middleware(req: NextRequest) {
   const isLoggedIn = !!sessionToken;
   const { pathname } = req.nextUrl;
 
-  const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register');
-  const isProtectedRoute =
-    pathname.startsWith('/workspace') ||
-    (pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/'));
+  const isAuthRoute = pathname === '/login' || pathname === '/register';
+  const isProtectedPage = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
+  const isProtectedApi = pathname.startsWith('/api/') && !pathname.startsWith('/api/auth/');
 
-  if (isProtectedRoute && !isLoggedIn) {
+  // Redirect unauthenticated users away from protected routes
+  if ((isProtectedPage || isProtectedApi) && !isLoggedIn) {
     return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
 
+  // Redirect authenticated users away from auth pages
   if (isAuthRoute && isLoggedIn) {
-    return NextResponse.redirect(new URL('/workspace', req.nextUrl));
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
   }
 
   return NextResponse.next();
