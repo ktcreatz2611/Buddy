@@ -72,7 +72,7 @@ const nextAuthResult = NextAuth({
 
 export const { handlers, signIn, signOut } = nextAuthResult;
 
-export const auth: typeof nextAuthResult.auth = async (...args: any[]) => {
+export const auth = (async (...args: any[]) => {
   try {
     // @ts-expect-error NextAuth auth() overloads make it hard to type a passthrough spread
     return await nextAuthResult.auth(...args);
@@ -80,4 +80,4 @@ export const auth: typeof nextAuthResult.auth = async (...args: any[]) => {
     console.error("Auth session error caught (likely invalid/old cookie):", error);
     return null;
   }
-};
+}) as unknown as typeof nextAuthResult.auth;
