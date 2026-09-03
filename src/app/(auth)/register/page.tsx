@@ -116,11 +116,30 @@ export default function RegisterPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Minimum 8 characters"
+            placeholder="Min 8 chars, upper, lower, number, symbol"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
             minLength={8}
           />
+          {password.length > 0 && (
+            <ul className="mt-2 space-y-1 text-xs">
+              <li className={password.length >= 8 ? 'text-green-600' : 'text-red-500'}>
+                {password.length >= 8 ? '✓' : '✗'} At least 8 characters
+              </li>
+              <li className={/[A-Z]/.test(password) ? 'text-green-600' : 'text-red-500'}>
+                {/[A-Z]/.test(password) ? '✓' : '✗'} One uppercase letter
+              </li>
+              <li className={/[a-z]/.test(password) ? 'text-green-600' : 'text-red-500'}>
+                {/[a-z]/.test(password) ? '✓' : '✗'} One lowercase letter
+              </li>
+              <li className={/[0-9]/.test(password) ? 'text-green-600' : 'text-red-500'}>
+                {/[0-9]/.test(password) ? '✓' : '✗'} One number
+              </li>
+              <li className={/[^A-Za-z0-9]/.test(password) ? 'text-green-600' : 'text-red-500'}>
+                {/[^A-Za-z0-9]/.test(password) ? '✓' : '✗'} One special character (!@#$%...)
+              </li>
+            </ul>
+          )}
         </div>
         
         <button
