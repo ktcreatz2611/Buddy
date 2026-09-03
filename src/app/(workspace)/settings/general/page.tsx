@@ -4,7 +4,12 @@ import { auth } from "@/lib/auth"
 import { SignOutButton } from "./sign-out-button"
 
 export default async function GeneralSettingsPage() {
-  const session = await auth()
+  let session = null
+  try {
+    session = await auth()
+  } catch (e) {
+    console.error("Caught JWTSessionError:", e)
+  }
   const profile = session?.user
 
   return (
