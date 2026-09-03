@@ -10,8 +10,8 @@ export default async function GeneralSettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold tracking-tight">General</h2>
-        <p className="text-sm text-zinc-400">Manage your account and preferences.</p>
+        <h1 className="text-2xl font-bold tracking-tight">General Settings</h1>
+        <p className="text-sm text-zinc-400 mt-1">Manage your account and preferences.</p>
       </div>
 
       {/* Profile Info */}

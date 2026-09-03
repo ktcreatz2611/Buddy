@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows, FileText, Brain, FlaskConical, Wrench, LayoutDashboard, ClipboardList, Trash2 } from "lucide-react"
+import { MessageSquare, Plus, Settings, Sparkles, Database, GitCompareArrows, FileText, Brain, FlaskConical, Wrench, LayoutDashboard, ClipboardList, Trash2, CreditCard } from "lucide-react"
 
 interface Conversation {
   id: string
@@ -219,6 +219,42 @@ export function Sidebar({ className }: SidebarProps) {
             Memory
           </Button>
         </Link>
+        <div className="pt-2 pb-1 mt-1">
+          <p className="px-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Settings</p>
+        </div>
+        <Link href="/settings/general">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/settings/general')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <Settings className="h-4 w-4" />
+            General
+          </Button>
+        </Link>
+        <Link href="/settings/providers">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/settings/providers') || pathname === '/settings'
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <Database className="h-4 w-4" />
+            Providers
+          </Button>
+        </Link>
+        <Link href="/settings/budget">
+          <Button variant="ghost" className={cn(
+            "w-full justify-start gap-2 h-9 px-2",
+            pathname?.startsWith('/settings/budget')
+              ? "bg-zinc-800 text-zinc-100"
+              : "text-zinc-400 hover:text-zinc-100"
+          )}>
+            <CreditCard className="h-4 w-4" />
+            Budget
+          </Button>
+        </Link>
         <Link href="/settings/audit">
           <Button variant="ghost" className={cn(
             "w-full justify-start gap-2 h-9 px-2",
@@ -228,17 +264,6 @@ export function Sidebar({ className }: SidebarProps) {
           )}>
             <ClipboardList className="h-4 w-4" />
             Audit Log
-          </Button>
-        </Link>
-        <Link href="/settings/providers">
-          <Button variant="ghost" className={cn(
-            "w-full justify-start gap-2 h-9 px-2",
-            pathname === '/settings/providers' || pathname === '/settings'
-              ? "bg-zinc-800 text-zinc-100"
-              : "text-zinc-400 hover:text-zinc-100"
-          )}>
-            <Settings className="h-4 w-4" />
-            Settings
           </Button>
         </Link>
       </div>
