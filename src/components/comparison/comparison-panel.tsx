@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { ResponseColumn } from "./response-column"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -39,16 +39,17 @@ export function ComparisonPanel({ comparisonId }: ComparisonPanelProps) {
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  useEffect(() => {
-    async function fetchComparison() {
-      const res = await fetch(`/api/comparisons/${comparisonId}`)
-      if (res.ok) {
-        const data = await res.json()
-        setComparison(data.data || data)
-      }
+  const fetchComparison = useCallback(async () => {
+    const res = await fetch(`/api/comparisons/${comparisonId}`)
+    if (res.ok) {
+      const data = await res.json()
+      setComparison(data.data || data)
     }
-    fetchComparison()
   }, [comparisonId])
+
+  useEffect(() => {
+    fetchComparison()
+  }, [fetchComparison])
 
   const handleSynthesize = async () => {
     if (!comparison?.responses.length) return
@@ -139,6 +140,7 @@ export function ComparisonPanel({ comparisonId }: ComparisonPanelProps) {
               providerId={comparison.responses[activeTab].providerId}
               modelName={comparison.responses[activeTab].modelName}
               modelKey={comparison.responses[activeTab].modelKey}
+              onRetry={fetchComparison}
             />
           )
         ) : (
@@ -155,6 +157,7 @@ export function ComparisonPanel({ comparisonId }: ComparisonPanelProps) {
                 providerId={r.providerId}
                 modelName={r.modelName}
                 modelKey={r.modelKey}
+                onRetry={fetchComparison}
               />
             ))}
           </div>

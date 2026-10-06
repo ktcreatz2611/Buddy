@@ -22,7 +22,7 @@ interface Provider {
   name: string
   type: string
   models: Model[]
-  hasCredentials: boolean
+  configured: boolean
 }
 
 interface ModelSelectorProps {
@@ -36,7 +36,7 @@ export function ModelSelector({ selectedModels, onSelectionChange, maxSelections
 
   useEffect(() => {
     async function fetchProviders() {
-      const res = await fetch('/api/providers')
+      const res = await fetch('/api/providers', { cache: 'no-store' })
       if (res.ok) {
         const data = await res.json()
         setProviders(data.data || data || [])
@@ -49,7 +49,7 @@ export function ModelSelector({ selectedModels, onSelectionChange, maxSelections
     selectedModels.some(m => m.providerId === providerId && m.modelId === modelId)
 
   const toggleModel = (provider: Provider, model: Model) => {
-    if (!provider.hasCredentials) return
+    if (!provider.configured) return
 
     const existing = selectedModels.find(
       m => m.providerId === provider.id && m.modelId === model.id
@@ -100,16 +100,18 @@ export function ModelSelector({ selectedModels, onSelectionChange, maxSelections
         <div key={provider.id} className="space-y-2">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-medium text-zinc-300">{provider.name}</h3>
-            {!provider.hasCredentials && (
-              <Badge variant="outline" className="text-[10px] text-amber-400 border-amber-600">
-                No API key
-              </Badge>
+            {!provider.configured && (
+              <a href={`/settings/providers/${provider.id}`}>
+                <Badge variant="outline" className="text-[10px] text-amber-400 border-amber-600 hover:bg-amber-900/20 cursor-pointer transition-colors">
+                  No API key
+                </Badge>
+              </a>
             )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {(provider.models || []).map(model => {
               const selected = isSelected(provider.id, model.id)
-              const disabled = !provider.hasCredentials || (!selected && selectedModels.length >= maxSelections)
+              const disabled = !provider.configured || (!selected && selectedModels.length >= maxSelections)
 
               return (
                 <Card

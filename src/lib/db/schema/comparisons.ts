@@ -8,7 +8,7 @@ import { models } from './providers';
  */
 export const comparisons = pgTable('comparisons', {
   id: uuid('id').primaryKey().defaultRandom(),
-  conversationId: uuid('conversation_id').notNull().references(() => conversations.id, { onDelete: 'cascade' }),
+  conversationId: uuid('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }),
   prompt: text('prompt').notNull(),
   status: text('status').notNull().default('pending'), // 'pending' | 'streaming' | 'complete' | 'error'
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),

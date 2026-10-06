@@ -20,11 +20,22 @@ export async function POST(req: Request) {
     const responseIds = [];
     
     for (const model of models) {
+      // Lookup the model in DB to get the provider string identifier securely
+      const dbModel = await db.query.models.findFirst({
+        where: (m, { eq }) => eq(m.id, model.modelId),
+        with: { provider: true }
+      });
+
+      if (!dbModel || !dbModel.provider) {
+        console.error(`Model or provider not found for modelId ${model.modelId}`);
+        continue;
+      }
+
       const [response] = await db.insert(comparisonResponses)
         .values({
           comparisonId: comparison.id,
           modelId: model.modelId,
-          providerId: model.providerId,
+          providerId: dbModel.provider.type, // The string identifier
           modelKey: model.modelKey,
           modelName: model.modelName || model.modelKey,
         })
@@ -32,12 +43,21 @@ export async function POST(req: Request) {
         
       responseIds.push(response.id);
 
+      // Resolve credential server-side
+      const cred = await db.query.credentials.findFirst({
+        where: (c, { eq }) => eq(c.providerId, dbModel.provider.id)
+      });
+
+      if (!cred) {
+        console.error(`No credential found for provider ${dbModel.provider.id}`);
+      }
+
       await comparisonQueue.add('generate', {
         comparisonResponseId: response.id,
         comparisonId: comparison.id,
-        providerId: model.providerId,
+        providerId: dbModel.provider.type,
         modelKey: model.modelKey,
-        credentialId: model.credentialId,
+        credentialId: cred?.id || '',
         prompt,
       });
     }

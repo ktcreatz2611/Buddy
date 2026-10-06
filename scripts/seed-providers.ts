@@ -44,22 +44,39 @@ const PROVIDERS = [
   },
   {
     type: 'openrouter', name: 'OpenRouter', baseUrl: 'https://openrouter.ai/api/v1',
-    models: [], // User adds their own
+    models: [
+      { modelId: 'openrouter/auto', name: 'Auto (Best available)', maxContext: 128000, maxOutput: 8192, inputPrice: '0.00', outputPrice: '0.00', capabilities: { chat: true, streaming: true, vision: false, toolCalling: true } },
+      { modelId: 'meta-llama/llama-3.1-70b-instruct', name: 'Llama 3.1 70B (OpenRouter)', maxContext: 131072, maxOutput: 8192, inputPrice: '0.52', outputPrice: '0.75', capabilities: { chat: true, streaming: true, vision: false, toolCalling: true } },
+      { modelId: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet (OpenRouter)', maxContext: 200000, maxOutput: 8192, inputPrice: '3.00', outputPrice: '15.00', capabilities: { chat: true, streaming: true, vision: true, toolCalling: true } },
+      { modelId: 'google/gemini-pro-1.5', name: 'Gemini 1.5 Pro (OpenRouter)', maxContext: 2000000, maxOutput: 8192, inputPrice: '1.25', outputPrice: '5.00', capabilities: { chat: true, streaming: true, vision: true, toolCalling: true } },
+    ],
   },
 ];
 
 async function seed() {
   console.log('Seeding providers and models...');
   for (const p of PROVIDERS) {
-    const [provider] = await db.insert(providers).values({
-      type: p.type,
-      name: p.name,
-      baseUrl: p.baseUrl || null,
-    }).onConflictDoNothing().returning();
+    let provider = await db.query.providers.findFirst({
+      where: (prov, { eq }) => eq(prov.type, p.type),
+    });
+
+    if (!provider) {
+      const [inserted] = await db.insert(providers).values({
+        type: p.type,
+        name: p.name,
+        baseUrl: p.baseUrl || null,
+      }).returning();
+      provider = inserted;
+    }
 
     if (provider && p.models.length > 0) {
       for (const m of p.models) {
-        await db.insert(models).values({
+        const modelExists = await db.query.models.findFirst({
+          where: (mod, { eq, and }) => and(eq(mod.providerId, provider!.id), eq(mod.modelId, m.modelId)),
+        });
+
+        if (!modelExists) {
+          await db.insert(models).values({
           providerId: provider.id,
           modelId: m.modelId,
           name: m.name,
@@ -69,6 +86,7 @@ async function seed() {
           outputPricePerMToken: m.outputPrice,
           capabilities: m.capabilities,
         }).onConflictDoNothing();
+        }
       }
     }
     console.log(`  Seeded: ${p.name} (${p.models.length} models)`);

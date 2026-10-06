@@ -26,27 +26,39 @@ export async function POST(
 
   if (!comparison) return new NextResponse('Not found', { status: 404 });
 
-  const body = await req.json();
-  const { credentialId } = body;
+  const model = await db.query.models.findFirst({
+    where: (m, { eq }) => eq(m.id, oldResponse.modelId!),
+    with: { provider: true },
+  });
 
-  if (!credentialId) return new NextResponse('Missing credentialId', { status: 400 });
+  if (!model || !model.provider) {
+    return new NextResponse('Model or provider not found', { status: 404 });
+  }
+
+  const cred = await db.query.credentials.findFirst({
+    where: (c, { eq }) => eq(c.providerId, model.provider.id)
+  });
+
+  if (!cred) return new NextResponse('Credential not found', { status: 400 });
 
   const [newResponse] = await db.insert(comparisonResponses)
     .values({
       comparisonId,
       modelId: oldResponse.modelId,
-      providerId: oldResponse.providerId,
+      providerId: model.provider.type, // USE THE STRING TYPE!
       modelKey: oldResponse.modelKey,
       modelName: oldResponse.modelName,
     })
     .returning();
 
+  await db.delete(comparisonResponses).where(eq(comparisonResponses.id, oldResponse.id));
+
   await comparisonQueue.add('generate', {
     comparisonResponseId: newResponse.id,
     comparisonId,
-    providerId: oldResponse.providerId,
+    providerId: model.provider.type,
     modelKey: oldResponse.modelKey,
-    credentialId,
+    credentialId: cred.id,
     prompt: comparison.prompt,
   });
 

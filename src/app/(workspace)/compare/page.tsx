@@ -67,14 +67,32 @@ export default function ComparePage() {
         </div>
 
         {/* Prompt input */}
-        <div className="mb-8">
+        <div className="mb-8 relative">
           <label className="block text-sm font-medium text-zinc-300 mb-2">Your prompt</label>
-          <Textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter your prompt here..."
-            className="min-h-[120px] bg-zinc-900 border-zinc-700 text-zinc-100 resize-none focus:border-zinc-500"
-          />
+          <div className="relative">
+            <Textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  e.preventDefault()
+                  handleCompare()
+                }
+              }}
+              placeholder="Enter your prompt here... (Ctrl+Enter to compare)"
+              className="min-h-[160px] bg-zinc-900 border-zinc-700 text-zinc-100 resize-none focus:border-zinc-500 pb-16"
+            />
+            <div className="absolute bottom-3 right-3">
+              <Button
+                onClick={handleCompare}
+                disabled={!canSubmit || isSubmitting}
+                className="px-6 shadow-sm"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                {isSubmitting ? 'Comparing...' : `Compare ${selectedModels.length} Models`}
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Model selector */}
@@ -85,19 +103,6 @@ export default function ComparePage() {
             onSelectionChange={setSelectedModels}
             maxSelections={4}
           />
-        </div>
-
-        {/* Submit */}
-        <div className="flex justify-end">
-          <Button
-            size="lg"
-            onClick={handleCompare}
-            disabled={!canSubmit || isSubmitting}
-            className="px-8"
-          >
-            <Send className="h-4 w-4 mr-2" />
-            {isSubmitting ? 'Creating comparison...' : `Compare ${selectedModels.length} Models`}
-          </Button>
         </div>
       </div>
     </div>

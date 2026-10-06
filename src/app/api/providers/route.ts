@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { providers } from '@/lib/db/schema';
+import { providers, models, credentials } from '@/lib/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, count } from 'drizzle-orm';
-import { models } from '@/lib/db/schema';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -20,10 +21,22 @@ export async function GET(request: Request) {
         .select({ count: count() })
         .from(models)
         .where(eq(models.providerId, provider.id));
+        
+      const providerModels = await db
+        .select()
+        .from(models)
+        .where(eq(models.providerId, provider.id));
+        
+      const credentialsCount = await db
+        .select({ count: count() })
+        .from(credentials)
+        .where(eq(credentials.providerId, provider.id));
       
       providerList.push({
         ...provider,
         modelsCount: modelsCount[0].count,
+        models: providerModels,
+        configured: credentialsCount[0].count > 0,
         status: provider.isEnabled ? 'active' : 'inactive',
       });
     }

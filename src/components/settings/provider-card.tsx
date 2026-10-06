@@ -10,6 +10,7 @@ export interface ProviderData {
   name: string
   type: string
   enabled: boolean
+  configured: boolean
   modelCount: number
   health: "healthy" | "degraded" | "unhealthy" | "unknown"
 }
@@ -42,11 +43,13 @@ export function ProviderCard({ provider, onClick }: ProviderCardProps) {
           <CardTitle className="text-zinc-100">{provider.name}</CardTitle>
           <CardDescription className="text-zinc-400 capitalize">{provider.type}</CardDescription>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          {provider.enabled ? (
-            <Badge variant="outline" className="border-green-500/50 text-green-400 bg-green-500/10">Enabled</Badge>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          {!provider.configured ? (
+            <Badge variant="outline" className="whitespace-nowrap border-yellow-500/50 text-yellow-400 bg-yellow-500/10">Setup Required</Badge>
+          ) : provider.enabled ? (
+            <Badge variant="outline" className="whitespace-nowrap border-green-500/50 text-green-400 bg-green-500/10">Enabled</Badge>
           ) : (
-            <Badge variant="outline" className="border-zinc-700 text-zinc-400">Disabled</Badge>
+            <Badge variant="outline" className="whitespace-nowrap border-zinc-700 text-zinc-400">Disabled</Badge>
           )}
         </div>
       </CardHeader>

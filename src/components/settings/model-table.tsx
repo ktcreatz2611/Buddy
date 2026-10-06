@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 
 export interface ModelData {
   id: string
+  modelId: string
   name: string
   contextWindow: number
   maxOutput: number
@@ -48,7 +49,7 @@ export function ModelTable({ models, onToggle }: ModelTableProps) {
           {sortedModels.map((model) => (
             <TableRow key={model.id}>
               <TableCell className="font-medium text-zinc-100">{model.name}</TableCell>
-              <TableCell className="text-zinc-400 font-mono text-xs">{model.id}</TableCell>
+              <TableCell className="text-zinc-400 font-mono text-xs">{model.modelId}</TableCell>
               <TableCell className="text-right text-zinc-300">{model.contextWindow.toLocaleString()}</TableCell>
               <TableCell className="text-right text-zinc-300">{model.maxOutput.toLocaleString()}</TableCell>
               <TableCell className="text-right text-zinc-300">{model.inputPrice.toFixed(2)}</TableCell>
